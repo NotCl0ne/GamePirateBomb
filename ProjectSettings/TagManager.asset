@@ -4,8 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
-  - Whale
+  - Bomb
   layers:
   - Default
   - TransparentFX
@@ -15,7 +14,10 @@ TagManager:
   - UI
   - 
   - 
-  - Ground
+  - Bomb
+  - BackgroundProps
+  - Character
+  - Platform
   - Enemy
   - 
   - 
@@ -36,19 +38,10 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
   m_SortingLayers:
-  - name: Background
-    uniqueID: 3516692675
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
-    uniqueID: 3066431425
-    locked: 0
-  - name: Foreground
-    uniqueID: 46365197
+  - name: Front
+    uniqueID: 3939879607
     locked: 0
