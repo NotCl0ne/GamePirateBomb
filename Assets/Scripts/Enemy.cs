@@ -40,9 +40,9 @@ public class Enemy : MonoBehaviour
         DetectPlayer();
         DetectBomb();
 
-        //if (!focussedBomb)
-            //PlayerChase();
-        /*else*/ if (pirate == Pirate.captain)
+        if (!focussedBomb)
+            PlayerChase();
+        else if (pirate == Pirate.captain)
             RunAway();
         else
             BombChase();

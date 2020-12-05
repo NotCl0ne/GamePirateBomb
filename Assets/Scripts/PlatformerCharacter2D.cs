@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace UnityStandardAssets._2D
@@ -7,7 +8,7 @@ namespace UnityStandardAssets._2D
     {
         [SerializeField] private float m_MaxSpeed = 10f;                    // The fastest the player can travel in the x axis.
         [SerializeField] private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
-        [SerializeField] private float m_JumpCooldown = 0.2f;                  // Amount of force added when the player jumps.
+        [SerializeField] private float m_JumpCooldown = 0.8f;                  // Amount of force added when the player jumps.
         [SerializeField] private bool m_AirControl = false;                 // Whether or not a player can steer while jumping;
         [SerializeField] private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
 
@@ -27,7 +28,9 @@ namespace UnityStandardAssets._2D
 
         bool isHit = false;
         public GameObject particlePrefab;
-        bool canLand = true;
+        public Transform RunParticle;
+        bool isRunParticleExist = false;
+
 
         private void Awake()
         {
@@ -36,7 +39,7 @@ namespace UnityStandardAssets._2D
             m_CeilingCheck = transform.Find("CeilingCheck");
             m_Anim = GetComponent<Animator>();
             m_Rigidbody2D = GetComponent<Rigidbody2D>();
-            // Time.timeScale = 0.2f;
+
         }
 
         bool prevGrounded = false;
@@ -59,45 +62,27 @@ namespace UnityStandardAssets._2D
             m_Anim.SetBool("Ground", m_Grounded);
 
             // Set the vertical animation
-            m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+            if(!m_Grounded)
+                m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
 
             if (m_Grounded && !prevGrounded)
             {
                 // Landed
+                m_Anim.SetFloat("vSpeed", 0f);
+                StartCoroutine(landParticle());
 
             }
             else if (!m_Grounded && prevGrounded)
             {
                 // Jumped
-                canLand = true;
             }
             prevGrounded = m_Grounded;
 
-            m_JumpCooldown -= 1 * 0.02f;
+            m_JumpCooldown -= 1 * 0.03f;
         }
 
-        void OnCollisionEnter2D(Collision2D col)
-        {
-            if (Lives.manager.isDead()) return;
 
-            if (col.gameObject.layer == 11)
-            {
-                if (canLand)
-                {
-                    GameObject jumpParticles = Instantiate(particlePrefab);
-                    jumpParticles.transform.position = new Vector2(col.contacts[0].point.x, col.contacts[0].point.y + 0.1f);
-                    jumpParticles.GetComponent<Animator>().SetTrigger("Land");
 
-                    canLand = false;
-                }
-                else
-                {
-                    GameObject jumpParticles = Instantiate(particlePrefab);
-                    jumpParticles.transform.position = new Vector2(col.contacts[0].point.x, col.contacts[0].point.y + 0.1f);
-                    jumpParticles.GetComponent<Animator>().SetTrigger("Run");
-                }
-            }
-        }
 
         Vector2 oldPosition; 
         public void Move(float move, bool jump)
@@ -114,7 +99,10 @@ namespace UnityStandardAssets._2D
 
                 // Move the character
                 m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
-
+                if (move != 0 && m_Grounded && m_JumpCooldown < 0)
+                {
+                    StartCoroutine(runParticle());
+                }
                 // If the input is moving the player right and the player is facing left...
                 if (move > 0 && !m_FacingRight)
                 {
@@ -135,12 +123,12 @@ namespace UnityStandardAssets._2D
                 m_Grounded = false;
                 m_Anim.SetBool("Ground", false);
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+                if(m_Anim.GetFloat("vSpeed")>=0)
+                    StartCoroutine(jumpParticle());
 
-                GameObject jumpParticles = Instantiate(particlePrefab);
-                jumpParticles.transform.position = new Vector2(transform.position.x, transform.position.y - 0.26f);
-                jumpParticles.GetComponent<Animator>().SetTrigger("Jump");
-                m_JumpCooldown = 0.2f;
+                m_JumpCooldown = 0.8f;
             }
+
         }
 
         private void Flip()
@@ -228,6 +216,42 @@ namespace UnityStandardAssets._2D
                     Rigidbody2DExtension.AddExplosionForce(colliders[i].GetComponent<Rigidbody2D>(), hitForce, transform.position, 1, 0.05f);
                     hit = true;
                 }
+            }
+        }
+
+        IEnumerator jumpParticle()
+        {
+            GameObject jumpParticles = Instantiate(particlePrefab);
+            jumpParticles.transform.position = new Vector2(transform.position.x, transform.position.y - 0.26f);
+            jumpParticles.GetComponent<Animator>().SetTrigger("Jump");
+            yield return new WaitForSeconds(.5f);
+            Destroy(jumpParticles);
+        }
+        IEnumerator landParticle()
+        {
+            GameObject landParticles = Instantiate(particlePrefab, new Vector2(transform.position.x, transform.position.y - 0.55f), Quaternion.identity);
+            landParticles.GetComponent<Animator>().SetTrigger("Land");
+            yield return new WaitForSeconds(.5f);
+            Destroy(landParticles);
+        }
+        IEnumerator runParticle()
+        {
+            if (!isRunParticleExist)
+            {
+                GameObject runParticles = Instantiate(particlePrefab);
+                if(!m_FacingRight)
+                {         
+                    Vector3 theScale = runParticles.transform.localScale;
+                    theScale.x *= -1;
+                    runParticles.transform.localScale = theScale;
+                }
+                runParticles.transform.position = RunParticle.position;
+                runParticles.GetComponent<Animator>().SetTrigger("Run");
+                isRunParticleExist = true;
+                yield return new WaitForSeconds(.45f);
+                Destroy(runParticles);
+                isRunParticleExist = false;
+
             }
         }
     }

@@ -107,5 +107,21 @@ public class Bomb : MonoBehaviour {
             Camera.main.transform.localPosition = cameraInitialPosition;
         }
     }
+
+    public void Launch(float force,bool isFacingRight)
+    {
+        float degrees = 45.0f;
+
+        if (isFacingRight == false)
+        {
+            degrees = -45.0f;
+            force *= -1;
+        }
+        float radians = degrees * Mathf.Deg2Rad;
+
+        Vector2 vec2 = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
+
+        transform.GetComponent<Rigidbody2D>().velocity = vec2 * force;
+    }
 }
 
