@@ -62,8 +62,13 @@ public class Lives : MonoBehaviour
 
         var pixelater = new PixelateTransition()
         {
-            nextScene = 0,
+            nextScene = SceneManager.GetActiveScene().buildIndex,
             finalScaleEffect = effect,
+            duration = 1.0f
+        };
+        var vertical = new VerticalSlicesTransition()
+        {
+            nextScene = SceneManager.GetActiveScene().buildIndex,
             duration = 1.0f
         };
         TransitionKit.instance.transitionWithDelegate(pixelater);

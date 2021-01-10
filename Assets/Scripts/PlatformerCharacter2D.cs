@@ -8,7 +8,7 @@ namespace UnityStandardAssets._2D
     {
         [SerializeField] private float m_MaxSpeed = 10f;                    // The fastest the player can travel in the x axis.
         [SerializeField] private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
-        [SerializeField] private float m_JumpCooldown = 0.8f;                  // Amount of force added when the player jumps.
+        [SerializeField] private float m_JumpCooldown = 0.6f;                  // Amount of force added when the player jumps.
         [SerializeField] private bool m_AirControl = false;                 // Whether or not a player can steer while jumping;
         [SerializeField] private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
 
@@ -29,9 +29,19 @@ namespace UnityStandardAssets._2D
         bool isHit = false;
         public GameObject particlePrefab;
         public Transform RunParticle;
+        public AudioClip jumpSound;
+        public AudioClip hitSound;
+        public AudioClip landSound;
+
         bool isRunParticleExist = false;
 
+        private SoundController soundController;
+        private static bool m_IsAlive = true;
 
+        public bool isAlive
+        {
+            get { return m_IsAlive; }
+        }
         private void Awake()
         {
             // Setting up references.
@@ -39,7 +49,7 @@ namespace UnityStandardAssets._2D
             m_CeilingCheck = transform.Find("CeilingCheck");
             m_Anim = GetComponent<Animator>();
             m_Rigidbody2D = GetComponent<Rigidbody2D>();
-
+            soundController = GetComponent<SoundController>();
         }
 
         bool prevGrounded = false;
@@ -53,7 +63,7 @@ namespace UnityStandardAssets._2D
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (colliders[i].gameObject != gameObject)
+                if (colliders[i].gameObject != gameObject &&colliders[i].gameObject.CompareTag("Ground"))
                 {
                     m_Grounded = true;
                 }
@@ -70,6 +80,7 @@ namespace UnityStandardAssets._2D
                 // Landed
                 m_Anim.SetFloat("vSpeed", 0f);
                 StartCoroutine(landParticle());
+                soundController.PlaySound(landSound);
 
             }
             else if (!m_Grounded && prevGrounded)
@@ -99,7 +110,7 @@ namespace UnityStandardAssets._2D
 
                 // Move the character
                 m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
-                if (move != 0 && m_Grounded && m_JumpCooldown < 0)
+                if (m_Anim.GetFloat("Speed")>0.1f && m_Grounded && m_JumpCooldown < 0&&prevGrounded)
                 {
                     StartCoroutine(runParticle());
                 }
@@ -125,10 +136,10 @@ namespace UnityStandardAssets._2D
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
                 if(m_Anim.GetFloat("vSpeed")>=0)
                     StartCoroutine(jumpParticle());
-
-                m_JumpCooldown = 0.8f;
+                soundController.PlaySound(jumpSound);
+                m_JumpCooldown = 0.6f;
             }
-
+    
         }
 
         private void Flip()
@@ -145,6 +156,7 @@ namespace UnityStandardAssets._2D
         public void Hit()
         {
             m_Anim.SetTrigger("Hit");
+            soundController.PlaySound(hitSound);
             isHit = true;
             Invoke("ResetHit", 0.2f);
             if(isPlayer)
@@ -170,14 +182,23 @@ namespace UnityStandardAssets._2D
             m_Anim.SetTrigger("Die");
             GetComponent<Collider2D>().sharedMaterial = null;
             this.enabled = false;
+            m_IsAlive = false;
         }
 
-        public void Attack(bool bomb=false)
+        public void Attack(bool bomb=false,bool isWhale=false)
         {
             if(bomb)
             {
-               m_Anim.SetTrigger("Special");
-                Invoke("CheckHitBomb", 0.2f);
+                m_Anim.SetTrigger("Special");
+
+                if (isWhale)
+                {
+                    Invoke("CheckHitBombWhale", 0.2f);
+                } else
+                {
+                    Invoke("CheckHitBomb", 0.2f);
+                }
+               
             }
             else
             {
@@ -204,6 +225,20 @@ namespace UnityStandardAssets._2D
             }
         }
 
+        void CheckHitBombWhale()
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, hitRadius);
+
+            bool hit = false;
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].tag == "Bomb" && !hit)
+                {
+                    colliders[i].GetComponent<Rigidbody2D>().AddExplosionForce(hitForce,-transform.position,1,0.05f);
+                    hit = true;
+                }
+            }
+        }
         void CheckHitBomb()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, hitRadius);

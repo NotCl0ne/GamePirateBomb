@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MaxSpeed: 3
-  m_JumpForce: 420
+  m_JumpForce: 490
   m_JumpCooldown: 0.2
   m_AirControl: 1
   m_WhatIsGround:
@@ -184,6 +184,7 @@ MonoBehaviour:
   hitRadius: 1
   particlePrefab: {fileID: 2570846511258879258, guid: bddb661dcf93a47a0ade95723b4dee57,
     type: 3}
+  RunParticle: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,6 +199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bombPrefab: {fileID: 4931028198571948113, guid: 36f537eb2c67e4e40abddf68b9f8feaf,
     type: 3}
+  MAX_FORCE: 10
+  MAX_TIME_HOLD: 1
 --- !u!58 &2066791983
 CircleCollider2D:
   m_ObjectHideFlags: 0

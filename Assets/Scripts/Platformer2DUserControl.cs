@@ -13,9 +13,10 @@ namespace UnityStandardAssets._2D
         private GameObject powerBar;
 
         private bool m_Jump;
+        private bool m_canJumpDown=false;
         public GameObject bombPrefab;
-        public const float MAX_FORCE= 7f;
-        public const float MAX_TIME_HOLD = 1f;
+        public  float MAX_FORCE= 7f;
+        public  float MAX_TIME_HOLD = 1f;
         private float holdDownTime_Start = 0;
         private void Awake()
         {
@@ -28,28 +29,25 @@ namespace UnityStandardAssets._2D
 
         private void Update()
         {
+
             if (!m_Jump)
             {
                 // Read the jump input in Update so button presses aren't missed.
-                m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-
-
-
+                m_Jump = Input.GetButtonDown("Jump");
             }
 
-            if (CrossPlatformInputManager.GetButtonDown("Fire1")) {
+            if (Input.GetButtonDown("Fire1")) {
                 holdDownTime_Start = Time.time;
                
                 
             }
-            if (CrossPlatformInputManager.GetButton("Fire1"))
+            if (Input.GetButton("Fire1"))
             {
-                if (powerBar.active == false)
-                    powerBar.SetActive(true);
+                powerBar.SetActive(true);
 
                 powerBar.GetComponent<Animator>().SetBool("ButtonDown", true);
             }
-            if (CrossPlatformInputManager.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1"))
             {
                 float holdDownTime = Time.time - holdDownTime_Start;
                 powerBar.SetActive(false);
@@ -60,6 +58,22 @@ namespace UnityStandardAssets._2D
                 bomb.GetComponent<Bomb>().Launch(calculateForce(holdDownTime),m_Character.m_FacingRight);
                 
             }
+            if (Input.GetKeyDown(KeyCode.S)&&m_canJumpDown)
+            {
+                
+                FindObjectOfType<OneSidePlatform>().jumpDown(gameObject,.15f);
+            }
+        }
+
+        void OnCollisionStay2D(Collision2D col)
+        {
+
+            if (col.gameObject.name == "Oneside Platform")
+            {
+                m_canJumpDown = true;
+            }
+            else m_canJumpDown = false;
+                
         }
 
         private float calculateForce(float holdDownTime)

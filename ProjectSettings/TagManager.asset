@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bomb
+  - Enemy
+  - Ground
+  - BackgroundProps
   layers:
   - Default
   - TransparentFX
