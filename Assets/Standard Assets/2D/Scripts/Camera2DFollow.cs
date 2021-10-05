@@ -10,6 +10,8 @@ namespace UnityStandardAssets._2D
         public float lookAheadFactor = 3;
         public float lookAheadReturnSpeed = 0.5f;
         public float lookAheadMoveThreshold = 0.1f;
+        public Vector2 maxXAndY; // The maximum x and y coordinates the camera can have.
+        public Vector2 minXAndY; // The minimum x and y coordinates the camera can have.
 
         private float m_OffsetZ;
         private Vector3 m_LastTargetPosition;
@@ -28,6 +30,10 @@ namespace UnityStandardAssets._2D
         // Update is called once per frame
         private void Update()
         {
+            float targetX = transform.position.x;
+            float targetY = transform.position.y;
+            targetX = Mathf.Clamp(targetX, minXAndY.x, maxXAndY.x);
+            targetY = Mathf.Clamp(targetY, minXAndY.y, maxXAndY.y);
             // only update lookahead pos if accelerating or changed direction
             float xMoveDelta = (target.position - m_LastTargetPosition).x;
 
@@ -43,6 +49,8 @@ namespace UnityStandardAssets._2D
             }
 
             Vector3 aheadTargetPos = target.position + m_LookAheadPos + Vector3.forward*m_OffsetZ;
+            //transform.position = new Vector3(targetX, targetY, transform.position.z);
+
             Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref m_CurrentVelocity, damping);
 
             transform.position = newPos;

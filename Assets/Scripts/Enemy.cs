@@ -74,6 +74,11 @@ public class Enemy : MonoBehaviour
             m_Character.Move(h, m_Jump);
 
         }
+        else
+        {
+            m_Character.Move(0, m_Jump);
+            chase = false;
+        }
 
     }
 
@@ -153,12 +158,15 @@ public class Enemy : MonoBehaviour
 
     void PlayerChase()
     {
-        if (!chase || Vector2.Distance(player.position, transform.position) > 5)
+        if (!chase)
+        {
+            
+            return;
+        }
+        if (Vector2.Distance(player.position, transform.position) > 5)
         {
             m_Character.Move(0, m_Jump);
-            playerSeen = false;
             chase = false;
-            return;
         }
 
         // Move towards player
@@ -224,6 +232,8 @@ public class Enemy : MonoBehaviour
             Invoke("StartChase", .6f);
             seenBomb = true;
         }
+        else
+            StartChase();
     }
 
     void StartChase()

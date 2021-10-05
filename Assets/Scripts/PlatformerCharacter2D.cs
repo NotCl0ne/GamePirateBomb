@@ -72,8 +72,10 @@ namespace UnityStandardAssets._2D
             m_Anim.SetBool("Ground", m_Grounded);
 
             // Set the vertical animation
-            if(!m_Grounded)
+            if (!m_Grounded)
+            {
                 m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+            }
 
             if (m_Grounded && !prevGrounded)
             {
@@ -183,6 +185,9 @@ namespace UnityStandardAssets._2D
             GetComponent<Collider2D>().sharedMaterial = null;
             this.enabled = false;
             m_IsAlive = false;
+            if(!gameObject.CompareTag("Player"))
+                Destroy(gameObject,.7f);
+
         }
 
         public void Attack(bool bomb=false,bool isWhale=false)

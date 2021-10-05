@@ -11,7 +11,7 @@ namespace UnityStandardAssets._2D
         private PlatformerCharacter2D m_Character;
 
         private GameObject powerBar;
-
+        private GameControl gameControl;
         private bool m_Jump;
         private bool m_canJumpDown=false;
         public GameObject bombPrefab;
@@ -23,7 +23,7 @@ namespace UnityStandardAssets._2D
             m_Character = GetComponent<PlatformerCharacter2D>();
             powerBar = GameObject.Find("Force Bar");
             powerBar.SetActive(false);
-
+            gameControl = GameObject.Find("Game Control").GetComponent<GameControl>();
         }
 
 
@@ -36,18 +36,18 @@ namespace UnityStandardAssets._2D
                 m_Jump = Input.GetButtonDown("Jump");
             }
 
-            if (Input.GetButtonDown("Fire1")) {
+            if (Input.GetButtonDown("Fire1") && gameControl.isCanSpawnBomb) {
                 holdDownTime_Start = Time.time;
                
                 
             }
-            if (Input.GetButton("Fire1"))
+            if (Input.GetButton("Fire1")&&gameControl.isCanSpawnBomb)
             {
                 powerBar.SetActive(true);
 
                 powerBar.GetComponent<Animator>().SetBool("ButtonDown", true);
             }
-            if (Input.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1") && gameControl.isCanSpawnBomb)
             {
                 float holdDownTime = Time.time - holdDownTime_Start;
                 powerBar.SetActive(false);
@@ -72,10 +72,19 @@ namespace UnityStandardAssets._2D
             {
                 m_canJumpDown = true;
             }
-            else m_canJumpDown = false;
-                
-        }
+            else
+            {
+                m_canJumpDown = false;
 
+            }
+
+        }
+        public bool canJumpDown
+        {
+            get { return m_canJumpDown; }
+            set { m_canJumpDown = value; }
+            
+        }
         private float calculateForce(float holdDownTime)
         {
             float maxTimeToHold = MAX_TIME_HOLD;

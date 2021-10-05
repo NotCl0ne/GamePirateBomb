@@ -45,7 +45,10 @@ public class PauseMenu : MonoBehaviour
     public void Save()
     {
         SaveLoad.Save();
-        Resume();
+        pauseMenuUI.SetActive(false);
+        character.GetComponent<Platformer2DUserControl>().enabled = true;
+        Time.timeScale = 1f;
+        m_gameIsPause = false;
     }
     void Pause()
     {

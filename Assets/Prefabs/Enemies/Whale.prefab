@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 6180198904902754243}
   - component: {fileID: 6180198904902754247}
   - component: {fileID: 642746222890847056}
+  - component: {fileID: 7966948297413034815}
   m_Layer: 12
   m_Name: Whale
   m_TagString: Enemy
@@ -305,7 +306,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -407,3 +408,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7966948297413034815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6180198904902754251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1c003e2c76e374ca0d21c77890aae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

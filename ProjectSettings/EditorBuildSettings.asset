@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level 1.unity
     guid: f7d9687c840a5a844b01847430e20e22
   - enabled: 1
+    path: Assets/Scenes/Level meoo meooo.unity
+    guid: c1580fde981ba464f91131e4f3304a68
+  - enabled: 1
     path: Assets/Scenes/Level Boss.unity
     guid: aa387a89c2b357542aae17f1fb2b2905
   m_configObjects: {}

@@ -17,9 +17,10 @@ GameObject:
   - component: {fileID: 4396142935391335139}
   - component: {fileID: 4396142935391335143}
   - component: {fileID: 1997476071347430055}
+  - component: {fileID: 5145847197540140561}
   m_Layer: 12
   m_Name: Captain
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -317,6 +318,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5145847197540140561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4396142935391335147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1c003e2c76e374ca0d21c77890aae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4396142935560438507
 GameObject:
   m_ObjectHideFlags: 0

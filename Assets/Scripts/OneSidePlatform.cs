@@ -13,6 +13,7 @@ public class OneSidePlatform : MonoBehaviour
     }
     IEnumerator ignoreCollider2D(GameObject character,float waitTime)
     {
+
         var listCollider2d = character.GetComponents<Collider2D>();
         foreach( Collider2D collider in listCollider2d){
             Physics2D.IgnoreCollision(collider, GetComponent<Collider2D>());
